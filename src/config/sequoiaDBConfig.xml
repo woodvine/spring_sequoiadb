@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-lazy-init="true">
+
+    <!-- 配置文件来源 -->
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config/sequoiaDB.properties</value>
+			</list>
+		</property>
+	</bean>     
+		
+   <!-- 设置数据库配置: SequoiadbDatasource类编译时参数名称编译没有设置，所以需要使用index来配置构造函数-->
+	<bean id="dataSource" class="com.sequoiadb.base.SequoiadbDatasource">
+		<constructor-arg index="0">
+			<list>
+				<value>${url}</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg index="1"><value>${username}</value></constructor-arg>
+		<constructor-arg index="2"><value>${password}</value></constructor-arg>
+		<constructor-arg index="3">
+			<bean class="com.sequoiadb.net.ConfigOptions">
+				<property name="connectTimeout"><value>${connectionTimeout}</value></property>
+				<property name="maxAutoConnectRetryTime"><value>${maxAutoConnRetryTime}</value></property>
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="4">
+			<bean class="com.sequoiadb.base.SequoiadbOption">
+				<property name="initConnectionNum"><value>${initConnectionNum}</value></property>
+				<property name="maxConnectionNum"><value>${maxConnectionNum}</value></property>
+				<property name="deltaIncCount"><value>${deltaIncCount}</value></property>
+				<property name="timeout"><value>${timeout}</value></property>
+				<property name="maxIdeNum"><value>${maxIdeNum}</value></property>
+				<property name="abandonTime"><value>${abandonTime}</value></property>
+				<property name="recheckCyclePeriod"><value>${recheckCyclePeriod}</value></property>
+				<property name="recaptureConnPeriod"><value>${recaptureConnPeriod}</value></property>
+			</bean>
+		</constructor-arg>
+	</bean>
+   
+</beans>
